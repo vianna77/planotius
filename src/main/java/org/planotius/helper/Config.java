@@ -9,7 +9,7 @@ import org.planotius.controller.Controller;
  */
 public class Config {
 
-    private static final Logger LOG = Logger.getLogger(Controller.class.getName());
+    private static final Logger LOG = Logger.getLogger(Config.class.getName());
 
     private static Config config = null;
     private static PropertiesLoader configuration;
