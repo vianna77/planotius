@@ -1,7 +1,6 @@
 package org.planotius.helper;
 
 import org.apache.log4j.Logger;
-import org.planotius.controller.Controller;
 
 /**
  *
