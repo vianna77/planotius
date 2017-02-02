@@ -179,6 +179,11 @@ public abstract class Controller {
                     element.setFrame(myAnnotation.frame());
                 }
 
+                //Setting locator
+                if (!myAnnotation.locator().equals("")) {
+                    element.setLocator(myAnnotation.locator());
+                }
+
                 element.setAclass(aClass);
                 element.setField(field);
             }
@@ -188,6 +193,7 @@ public abstract class Controller {
 
     public WebElement loadInputData(Element myElement) {
         String value;
+        String locator;
         WebElement element = null;
         log.debug("Find by getting driver");
         FindBy findBy = new FindBy(server.getDriver());
@@ -211,84 +217,101 @@ public abstract class Controller {
                 }
                 //[finish] [TAM-3] Skip the external file. You can set the value directly on the ElementDiscover annotation
 
-                if (myElement.getFrame() != "") {
-                    //TODO: Adjust Frame navigation (This is a temporary solution...
-                    try {
-                        log.debug("Trying to switching to frame ->" + myElement.getFrame() + "<-");
-                        driver.switchTo().frame(myElement.getFrame());
-                    } catch (Exception e) {
-                        // APARENTEMENTE, SE CAUSAR UM NPE AQUI, NAO TEM IMPORTANCIA.
-                    }
-                }
+                locator = myAnnotation.locator();
 
+                /*if (myElement.getFrame() != "") {
+                 //TODO: Adjust Frame navigation (This is a temporary solution...
+                 try {
+                 driver.switchTo().frame(myElement.getFrame());
+                 } catch (Exception e) {
+
+                 }
+                 }
+                 */
+//                if (value != null) {
+//
+//                    element = findBy.id(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.name(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.partialLinkText(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.xpath(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.cssSelector(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.linkText(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.tagName(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.className(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                    element = findBy.imageAlt(value);
+//                    if (element != null) {
+//                        return element;
+//                    }
+//
+//                }
                 if (value != null) {
-                    log.info("Value is " + value);
-                    log.debug("Trying to find value by ID");
-                    element = findBy.id(value);
-                    if (element != null) {
-                        log.debug("Found value by ID");
-                        return element;
+                    switch (locator.toLowerCase()) {
+                        case "id":
+                            log.debug("Using 'id' to find '" + value + "'.");
+                            return findBy.id(value);
+                        case "name":
+                            log.debug("Using 'name' to find '" + value + "'.");
+                            return findBy.name(value);
+                        case "partiallinktest":
+                            log.debug("Using 'partialLinkText' to find '" + value + "'.");
+                            return findBy.partialLinkText(value);
+                        case "xpath":
+                            log.debug("Using 'xpath' to find '" + value + "'.");
+                            return findBy.xpath(value);
+                        case "css":
+                            log.debug("Using 'css' to find '" + value + "'.");
+                            return findBy.cssSelector(value);
+                        case "linktext":
+                            log.debug("Using 'linkText' to find '" + value + "'.");
+                            return findBy.linkText(value);
+                        case "tag":
+                            log.debug("Using 'tagName' to find '" + value + "'.");
+                            return findBy.tagName(value);
+                        case "class":
+                            log.debug("Using 'className' to find '" + value + "'.");
+                            return findBy.className(value);
+                        case "imageAlt":
+                            log.debug("Using 'imageAlt' to find '" + value + "'.");
+                            return findBy.imageAlt(value);
+                        default:
+                            log.debug("Locator undefined, trying to search a locator for '" + value + "'.");
+                            return searchAll(findBy, value);
                     }
-                    log.debug("Trying to find value by XPATH");
-                    element = findBy.xpath(value);
-                    if (element != null) {
-                        log.debug("Found value by xpath");
-                        return element;
-                    }
-                    log.debug("Trying to find value by PARTIALLINKTEXT");
-                    element = findBy.partialLinkText(value);
-                    if (element != null) {
-                        log.debug("Found value by partialLinkText");
-                        return element;
-                    }
-                    log.debug("Trying to find value by NAME");
-                    element = findBy.name(value);
-                    if (element != null) {
-                        log.debug("Found value by name");
-                        return element;
-                    }
-                    log.debug("Trying to find value by CSSSELECTOR");
-                    element = findBy.cssSelector(value);
-                    if (element != null) {
-                        log.debug("Found value by cssSelector");
-                        return element;
-                    }
-                    log.debug("Trying to find value by LINKTEXT");
-                    element = findBy.linkText(value);
-                    if (element != null) {
-                        log.debug("Found value by linkText");
-                        return element;
-                    }
-                    log.debug("Trying to find value by TAGNAME");
-                    element = findBy.tagName(value);
-                    if (element != null) {
-                        log.debug("Found value by tagName");
-                        return element;
-                    }
-                    log.debug("Trying to find value by CLASSNAME");
-                    element = findBy.className(value);
-                    if (element != null) {
-                        log.debug("Found value by className");
-                        return element;
-                    }
-                    log.debug("Trying to find value by IMAGEALT");
-                    element = findBy.imageAlt(value);
-                    if (element != null) {
-                        log.debug("Found value by imageAlt");
-                        return element;
-                    }
-
-                    log.warn("VALUE NOT FOUND BY ANY CODED SEARCH METHOD.");
-
-                } else {
-                    log.warn("Value is NULL for current key.");
                 }
-            } else {
-                log.warn("Annotation is NOT ElementDiscover. It is " + annotation.getClass().getName());
             }
         }
-
-        log.warn("RETURNING NULL.");
         return null;
     }
 
@@ -325,11 +348,11 @@ public abstract class Controller {
 
     public void connectServer() {
         server = new SeleniumServer(browser, testServer, port);
-        
-        if (server.getDriver() == null){
-        driver = server.startServer();
+
+        if (server.getDriver() == null) {
+            driver = server.startServer();
         }
-        
+
         driver = server.getDriver();
     }
 
@@ -442,5 +465,71 @@ public abstract class Controller {
 
     public String getUrl() {
         return url;
+    }
+
+    private static WebElement searchAll(FindBy findBy, String value) {
+        WebElement element = null;
+        element = findBy.id(value);
+        if (element != null) {
+            log.debug("Found '" + value + "'by 'id'.");
+            return element;
+        }
+
+        element = findBy.className(value);
+        if (element != null) {
+            log.debug("Found '" + value + "'by 'className'.");
+            return element;
+        }
+
+        element = findBy.tagName(value);
+        if (element != null) {
+            log.debug("Found '" + value + "'by 'tagName'.");
+            return element;
+        }
+
+        try {
+            element = findBy.name(value);
+            if (element != null) {
+                log.debug("Found '" + value + "'by 'name'.");
+                return element;
+            }
+        } catch (Exception e) {
+            log.debug("browser may have died when trying to findBy 'name'.");
+        }
+
+        element = findBy.linkText(value);
+        if (element != null) {
+            log.debug("Found '" + value + "'by 'linkText'.");
+            return element;
+        }
+
+        element = findBy.partialLinkText(value);
+        if (element != null) {
+            log.debug("Found '" + value + "'by 'partialLinkText'.");
+            return element;
+        }
+
+        try {
+            element = findBy.cssSelector(value);
+            if (element != null) {
+                log.debug("Found '" + value + "'by 'css'.");
+                return element;
+            }
+        } catch (Exception e1) {
+            log.debug("browser may have died when trying to findBy 'CSS'.");
+        }
+
+        element = findBy.xpath(value);
+        if (element != null) {
+            log.debug("Found '" + value + "'by 'xpath'.");
+            return element;
+        }
+
+        element = findBy.imageAlt(value);
+        if (element != null) {
+            log.debug("Found '" + value + "'by 'imageAlt'.");
+            return element;
+        }
+        return null;
     }
 }
